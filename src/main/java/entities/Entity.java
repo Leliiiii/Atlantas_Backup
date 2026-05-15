@@ -43,12 +43,7 @@ public abstract class Entity {
         return y + height / 2;
     }
 
-    public boolean intersects(Entity other) {
-        return x < other.x + other.width &&
-               x + width > other.x &&
-               y < other.y + other.height &&
-               y + height > other.y;
-    }
+    //TODO IN CASO DI INTERSECAZIONE
 
     public double distanceTo(Entity other) {
         double dx = getCenterX() - other.getCenterX();

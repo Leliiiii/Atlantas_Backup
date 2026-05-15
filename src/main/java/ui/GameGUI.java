@@ -77,9 +77,7 @@ public class GameGUI {
         drawProjectiles();
         drawUI();
 
-        if (showGameOver) {
-            drawGameOver();
-        }
+        //TODO COSA SUCCEDE SE SI PERDE (IF)
     }
 
     private void drawBackground() {
@@ -232,38 +230,7 @@ public class GameGUI {
         gc.fillText("Nemici: " + engine.getEnemyUnits().size(), 380, 35);
     }
 
-    private void drawGameOver() {
-        // Dark overlay
-        gc.setFill(Color.rgb(0, 0, 0, 0.7));
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+    //TODO METODO SCONFITTA
 
-        // Game Over text
-        gc.setFont(Font.font("Arial", FontWeight.BOLD, 48));
-        if (playerWon) {
-            gc.setFill(Color.GOLD);
-            gc.fillText("VITTORIA!", canvas.getWidth()/2 - 120, canvas.getHeight()/2 - 20);
-            gc.setFont(Font.font("Arial", 18));
-            gc.setFill(Color.WHITE);
-            gc.fillText("Atlantide è salva!", canvas.getWidth()/2 - 80, canvas.getHeight()/2 + 20);
-        } else {
-            gc.setFill(Color.DARKRED);
-            gc.fillText("SCONFITTA!", canvas.getWidth()/2 - 130, canvas.getHeight()/2 - 20);
-            gc.setFont(Font.font("Arial", 18));
-            gc.setFill(Color.WHITE);
-            gc.fillText("Il Doge Necrotico ha vinto...", canvas.getWidth()/2 - 110, canvas.getHeight()/2 + 20);
-        }
 
-        gc.setFont(Font.font("Arial", 14));
-        gc.setFill(Color.LIGHTGRAY);
-        gc.fillText("Premi R per riprovare", canvas.getWidth()/2 - 80, canvas.getHeight()/2 + 60);
-    }
-
-    public boolean isShowGameOver() {
-        return showGameOver;
-    }
-
-    public void reset() {
-        showGameOver = false;
-        playerWon = false;
-    }
 }

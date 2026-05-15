@@ -100,14 +100,9 @@ public class Game extends Application {
     private HBox createUnitButtons() {
         HBox box = new HBox();
 
-        Button btnOctopus = createUnitButton("Polpo (20)", "octopus", Color.CYAN);
         Button btnCrab = createUnitButton("Granchio (35)", "crab", Color.DEEPSKYBLUE);
-        Button btnJelly = createUnitButton("Medusa (30)", "jellyfish", Color.LIGHTBLUE);
-        Button btnPuffer = createUnitButton("Pesce Palla (40)", "pufferfish", Color.YELLOW);
-        Button btnEel = createUnitButton("Anguilla (25)", "eel", Color.AQUAMARINE);
-        Button btnSeahorse = createUnitButton("Cavalluccio (30)", "seahorse", Color.LIGHTGREEN);
 
-        box.getChildren().addAll(btnOctopus, btnCrab, btnJelly, btnPuffer, btnEel, btnSeahorse);
+        box.getChildren().addAll(btnCrab);
         return box;
     }
 
@@ -138,7 +133,6 @@ public class Game extends Application {
     private void restartGame() {
         gui.stop();
         engine.reset();
-        gui.reset();
         gui.start();
     }
 

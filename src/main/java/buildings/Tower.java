@@ -22,15 +22,6 @@ public class Tower {
         this.subject = new Subject();
     }
 
-    public void takeDamage(double damage) {
-        hp -= damage;
-        if (hp <= 0) {
-            hp = 0;
-            destroyed = true;
-        }
-        subject.notifyObservers("tower_hp_changed", this);
-    }
-
     public boolean isDestroyed() {
         return destroyed;
     }
@@ -42,13 +33,4 @@ public class Tower {
     public double getWidth() { return width; }
     public double getHeight() { return height; }
     public String getTeam() { return team; }
-    public Subject getSubject() { return subject; }
-
-    public double getCenterX() {
-        return x + width / 2;
-    }
-
-    public double getCenterY() {
-        return y + height / 2;
-    }
 }

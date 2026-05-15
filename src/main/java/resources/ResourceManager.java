@@ -7,9 +7,10 @@ public class ResourceManager {
     private static ResourceManager instance;
     private final Subject subject;
 
+    //TODO DA DECIDERE IL GAME DESIGN
     private double energy = 50;
     private double maxEnergy = 100;
-    private double regenRate = 0.3;
+    private double regenRate = 0.8;
 
     private ResourceManager() {
         this.subject = new Subject();

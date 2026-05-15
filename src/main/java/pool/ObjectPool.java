@@ -42,11 +42,7 @@ public class ObjectPool<T extends Poolable> {
         }
     }
 
-    public void freeAll() {
-        for (T obj : new ArrayList<>(inUse)) {
-            free(obj);
-        }
-    }
+    //TODO FREE ALL IN CASO
 
     public List<T> getInUse() {
         return new ArrayList<>(inUse);

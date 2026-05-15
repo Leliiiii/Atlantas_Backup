@@ -19,28 +19,9 @@ public class Projectile extends Entity implements Poolable {
         this.team = team;
     }
 
-    @Override
-    public void update(double deltaTime) {
-        if (!active || target == null || !target.isActive()) {
-            active = false;
-            return;
-        }
+    //TODO IL RENDERING DEI PROIETTILI
+    public void update(double tempo){
 
-        double dx = target.getCenterX() - getCenterX();
-        double dy = target.getCenterY() - getCenterY();
-        double dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < 10) {
-            target.takeDamage(damage);
-            active = false;
-            return;
-        }
-
-        double moveX = (dx / dist) * speed * deltaTime * 60;
-        double moveY = (dy / dist) * speed * deltaTime * 60;
-
-        x += moveX;
-        y += moveY;
     }
 
     public void setTarget(Unit target) {

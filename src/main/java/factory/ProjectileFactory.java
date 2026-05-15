@@ -22,17 +22,7 @@ public class ProjectileFactory {
         return instance;
     }
 
-    public Projectile createProjectile(double x, double y, double damage, double speed, Unit target, String team) {
-        Projectile p = projectilePool.obtain();
-        if (p == null) {
-            p = new Projectile(x, y, damage, speed, target, team);
-        } else {
-            p.setX(x);
-            p.setY(y);
-            p.setTarget(target);
-        }
-        return p;
-    }
+
 
     public void returnProjectile(Projectile p) {
         projectilePool.free(p);

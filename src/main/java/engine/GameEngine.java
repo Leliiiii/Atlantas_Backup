@@ -4,12 +4,10 @@ import buildings.EnemyTower;
 import buildings.PlayerTower;
 import buildings.Tower;
 import factory.EntityFactory;
-import javafx.scene.paint.Color;
 import observer.Observer;
 import observer.Subject;
 import projectiles.Projectile;
 import resources.ResourceManager;
-import units.SeahorseUnit;
 import units.Unit;
 
 import java.util.ArrayList;
@@ -55,10 +53,6 @@ public class GameEngine {
 
         updateUnits(deltaTime, playerUnits, enemyUnits, enemyTower);
         updateUnits(deltaTime, enemyUnits, playerUnits, playerTower);
-
-        updateProjectiles(deltaTime);
-
-        checkGameOver();
     }
 
     private void updateUnits(double deltaTime, List<Unit> allies, List<Unit> enemies, Tower enemyTower) {
@@ -71,29 +65,18 @@ public class GameEngine {
             }
 
             unit.update(deltaTime);
+            //TODO OCCHIO I CONTROLLI PER TRUPPE SPECIALI
 
-            // Healer units special behavior
-            if (unit instanceof SeahorseUnit) {
-                ((SeahorseUnit) unit).healAllies(allies);
-            }
-
-            // Find target
+            // Cerca un target
             Unit target = unit.findTarget(enemies);
 
             if (target != null && unit.isInRange(target)) {
                 unit.setMoving(false);
                 unit.setTarget(target);
 
-                // Ranged units shoot projectiles
-                if (unit.getRange() > 100) {
-                    if (unit.getAttackTimer() <= 0) {
-                        spawnProjectile(unit, target);
-                    }
-                } else {
-                    unit.attack(target);
-                }
+                //TODO ATTENTION:IN CASO PER QUELLI CHE SPARANO A DISTANZA DEVO AGGIUNGERE UN CONTROLLO
             } else {
-                // No target in range, move towards enemy tower
+                // Se non trova nemici continua a muoversi
                 unit.setMoving(true);
                 unit.setTarget(null);
                 unit.move(deltaTime);
@@ -103,26 +86,6 @@ public class GameEngine {
                     enemyTower.takeDamage(unit.getDamage() * deltaTime);
                     unit.setMoving(false);
                 }
-            }
-        }
-    }
-
-    private void spawnProjectile(Unit shooter, Unit target) {
-        Projectile p = EntityFactory.getInstance().createProjectile(
-            shooter.getCenterX(), shooter.getCenterY(),
-            shooter.getDamage(), 5.0, target, shooter.getTeam()
-        );
-        projectiles.add(p);
-    }
-
-    private void updateProjectiles(double deltaTime) {
-        Iterator<Projectile> iterator = projectiles.iterator();
-        while (iterator.hasNext()) {
-            Projectile p = iterator.next();
-            p.update(deltaTime);
-            if (!p.isActive()) {
-                EntityFactory.getInstance().returnProjectile(p);
-                iterator.remove();
             }
         }
     }
@@ -137,18 +100,6 @@ public class GameEngine {
             return unitRight >= towerLeft;
         } else {
             return unitLeft <= towerRight;
-        }
-    }
-
-    private void checkGameOver() {
-        if (enemyTower.isDestroyed()) {
-            gameOver = true;
-            playerWon = true;
-            gameStateSubject.notifyObservers("game_over", true);
-        } else if (playerTower.isDestroyed()) {
-            gameOver = true;
-            playerWon = false;
-            gameStateSubject.notifyObservers("game_over", false);
         }
     }
 
