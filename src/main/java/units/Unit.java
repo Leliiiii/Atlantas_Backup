@@ -5,109 +5,195 @@ import javafx.scene.paint.Color;
 import observer.Subject;
 
 public abstract class Unit extends Entity {
-    protected double hp;
-    protected double maxHp;
-    protected double damage;
-    protected double speed;
-    protected double range;
-    protected double attackCooldown;
-    protected double attackTimer = 0;
-    protected String team;
-    protected Unit target;
-    protected boolean moving = true;
-    protected Subject subject;
-    protected double cost;
+    protected double health;
+    protected double maxHealth;
+    protected double atkDamage;
+    protected double moveSpeed;
+    protected double attackRange;
+    protected double atkCooldown;
+    protected double atkTimer = 0;
+    protected String squadra;
+    protected Unit currentTarget;
+    protected boolean isMoving = true;
+    protected Subject observer;
+    protected double spawnCost;
 
-    public Unit(double x, double y, double width, double height, Color color,
-                double hp, double damage, double speed, double range,
-                double attackCooldown, String team, double cost) {
+    public Unit(double x, double y, double width, double height, Color color, double hp, double damage, double speed, double range, double attackCooldown, String team, double cost) {
         super(x, y, width, height, color);
-        this.hp = hp;
-        this.maxHp = hp;
-        this.damage = damage;
-        this.speed = speed;
-        this.range = range;
-        this.attackCooldown = attackCooldown;
-        this.team = team;
-        this.cost = cost;
-        this.subject = new Subject();
+
+        this.health = hp;
+        this.maxHealth = hp;
+        this.atkDamage = damage;
+        this.moveSpeed = speed;
+        this.attackRange = range;
+        this.atkCooldown = attackCooldown;
+        // Squadra dell unita
+        this.squadra = team;
+        this.spawnCost = cost;
+        // Observer per hp ecc
+        observer = new Subject();
     }
 
     @Override
     public void update(double deltaTime) {
-        if (!active || hp <= 0) {
-            active = false;
+        // Se muore si disattiva
+        if (!attiva || health <= 0) {
+            attiva = false;
             return;
         }
 
-        if (attackTimer > 0) {
-            attackTimer -= deltaTime;
+        // Timer attacco
+        if (atkTimer > 0) {
+            atkTimer = atkTimer - deltaTime;
         }
 
-        if (target != null && !target.isActive()) {
-            target = null;
-            moving = true;
+        // Se il target muore lo resetta
+        if (currentTarget != null) {
+            if (!currentTarget.isActive()) {
+                currentTarget = null;
+                isMoving = true;
+            }
         }
     }
 
     public void move(double deltaTime) {
-        if (moving) {
-            double direction = team.equals("player") ? 1 : -1;
-            x += speed * direction * deltaTime * 60;
+        // Se non deve muoversi
+        if (!isMoving) {
+            return;
         }
+        // Per la decisione del movimento ho sfruttato l'attributo team per capire verso dove andava
+        double direzione;
+
+        // Player destra enemy sinistra
+        if (squadra.equals("player")) {
+            direzione = 1;
+        } else {
+            direzione = -1;
+        }
+
+        // Movimento unita
+        posX = posX + moveSpeed * direzione * deltaTime * 60;
     }
 
     public void attack(Unit target) {
-        if (attackTimer <= 0 && target != null && target.isActive()) {
-            target.takeDamage(damage);
-            attackTimer = attackCooldown;
+        // Controllo target
+        if (target == null) {
+            return;
+        }
+
+        // Se il target è morto
+        if (!target.isActive()) {
+            return;
+        }
+
+        // Attacca solo se pronto col countdown dell attacco
+        if (atkTimer <= 0) {
+            target.takeDamage(atkDamage);
+            atkTimer = atkCooldown;
         }
     }
 
     public void takeDamage(double damage) {
-        hp -= damage;
-        if (hp <= 0) {
-            hp = 0;
-            active = false;
+        // Riduce hp
+        health = health - damage;
+
+        // Morte unita
+        if (health <= 0) {
+            health = 0;
+            // Schiatta
+            attiva = false;
         }
-        subject.notifyObservers("hp_changed", this);
+
+        // Aggiorna observer
+        observer.notifyObservers("health_changed", this);
     }
 
     public Unit findTarget(java.util.List<Unit> enemies) {
-        Unit closest = null;
-        double minDist = Double.MAX_VALUE;
+        Unit nearestEnemy = null;
+        double minDistance = Double.MAX_VALUE;
 
-        for (Unit enemy : enemies) {
-            if (!enemy.isActive()) continue;
-            double dist = distanceTo(enemy);
-            if (dist < minDist) {
-                minDist = dist;
-                closest = enemy;
+        // Cerca nemico piu vicino
+        for (int i = 0; i < enemies.size(); i++) {
+            Unit enemy = enemies.get(i);
+
+            // Skip se morto
+            if (!enemy.isActive()) {
+                // Con il ragionamento opposto (usare un if(true) con le operazioni nell'if)
+                // non mi riusciva a targhettare il nemico
+                continue;
+            }
+            double distanza = distanceTo(enemy);
+
+            // Salva il piu vicino
+            if (distanza < minDistance) {
+                minDistance = distanza;
+                nearestEnemy = enemy;
             }
         }
-
-        return closest;
+        return nearestEnemy;
     }
 
     public boolean isInRange(Unit target) {
-        return distanceTo(target) <= range;
+        double distanza = distanceTo(target);
+
+        // Controlla se nel range
+        if (distanza <= attackRange) {
+            return true;
+        }
+        return false;
     }
 
-    public double getHp() { return hp; }
-    public double getMaxHp() { return maxHp; }
-    public String getTeam() { return team; }
-    public double getCost() { return cost; }
-    public boolean isMoving() { return moving; }
-    public void setMoving(boolean moving) { this.moving = moving; }
-    public void setTarget(Unit target) { this.target = target; }
-    public Unit getTarget() { return target; }
-    public double getRange() { return range; }
-    public double getAttackCooldown() { return attackCooldown; }
-    public double getAttackTimer() { return attackTimer; }
-    public Subject getSubject() { return subject; }
-    public double getDamage() { return damage; }
+    public double getHp() {
+        return health;
+    }
+
+    public double getMaxHp() {
+        return maxHealth;
+    }
+
+    public String getTeam() {
+        return squadra;
+    }
+
+    public double getCost() {
+        return spawnCost;
+    }
+
+    public boolean isMoving() {
+        return isMoving;
+    }
+
+    public void setMoving(boolean moving) {
+        this.isMoving = moving;
+    }
+
+    public void setTarget(Unit target) {
+        this.currentTarget = target;
+    }
+
+    public Unit getTarget() {
+        return currentTarget;
+    }
+
+    public double getRange() {
+        return attackRange;
+    }
+
+    public double getAttackCooldown() {
+        return atkCooldown;
+    }
+
+    public double getAttackTimer() {
+        return atkTimer;
+    }
+
+    public Subject getSubject() {
+        return observer;
+    }
+
+    public double getDamage() {
+        return atkDamage;
+    }
 
     public abstract String getUnitName();
-
-
 }

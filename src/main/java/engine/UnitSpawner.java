@@ -13,7 +13,7 @@ public class UnitSpawner {
     private int enemySpawnCount = 0;
 
     private final String[] enemyTypes = {
-        "gondolier", "mask", "patrician", "childswarm", "friar"
+            "gondolier", "mask", "patrician", "childswarm", "friar"
     };
 
     public UnitSpawner() {
@@ -41,7 +41,7 @@ public class UnitSpawner {
     private void spawnEnemy(List<Unit> enemyUnits, double laneY, double screenWidth) {
         String type = enemyTypes[random.nextInt(enemyTypes.length)];
 
-        // Boss spawn chance after 20 spawns
+        // Possibilità dello spawn di boss
         if (enemySpawnCount > 20 && random.nextDouble() < 0.05) {
             type = "bossdoge";
         }

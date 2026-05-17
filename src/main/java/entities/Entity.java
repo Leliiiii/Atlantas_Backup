@@ -3,51 +3,79 @@ package entities;
 import javafx.scene.paint.Color;
 
 public abstract class Entity {
-    protected double x, y;
-    protected double width, height;
-    protected boolean active = true;
-    protected Color color;
+    // posizione entity
+    protected double posX;
+    protected double posY;
+    // dimensioni entity
+    protected double larghezza;
+    protected double altezza;
+    // se è viva o attiva nel gioco
+    protected boolean attiva = true;
+    // colore grafico
+    protected Color colore;
 
     public Entity(double x, double y, double width, double height, Color color) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.color = color;
+        this.posX = x;
+        this.posY = y;
+        this.larghezza = width;
+        this.altezza = height;
+        this.colore = color;
     }
 
+    // aggiorna logica entity
     public abstract void update(double deltaTime);
 
     public boolean isActive() {
-        return active;
+        return attiva;
     }
 
     public void setActive(boolean active) {
-        this.active = active;
+        this.attiva = active;
     }
 
-    public double getX() { return x; }
-    public double getY() { return y; }
-    public double getWidth() { return width; }
-    public double getHeight() { return height; }
-    public Color getColor() { return color; }
+    public double getX() {
+        return posX;
+    }
 
-    public void setX(double x) { this.x = x; }
-    public void setY(double y) { this.y = y; }
+    public double getY() {
+        return posY;
+    }
 
+    public double getWidth() {
+        return larghezza;
+    }
+
+    public double getHeight() {
+        return altezza;
+    }
+
+    public Color getColor() {
+        return colore;
+    }
+
+    public void setX(double x) {
+        this.posX = x;
+    }
+
+    public void setY(double y) {
+        this.posY = y;
+    }
+
+    // centro entity in X
     public double getCenterX() {
-        return x + width / 2;
+        return posX + larghezza / 2;
     }
 
+    // centro entity in Y
     public double getCenterY() {
-        return y + height / 2;
+        return posY + altezza / 2;
     }
 
-    //TODO IN CASO DI INTERSECAZIONE
+    // TODO gestione collisioni
 
     public double distanceTo(Entity other) {
-        double dx = getCenterX() - other.getCenterX();
-        double dy = getCenterY() - other.getCenterY();
-        return Math.sqrt(dx * dx + dy * dy);
+        double deltaX = getCenterX() - other.getCenterX();
+        double deltaY = getCenterY() - other.getCenterY();
+        return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
     }
 }

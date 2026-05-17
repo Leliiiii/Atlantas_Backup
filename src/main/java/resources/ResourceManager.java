@@ -5,15 +5,16 @@ import observer.Subject;
 
 public class ResourceManager {
     private static ResourceManager instance;
-    private final Subject subject;
-
-    //TODO DA DECIDERE IL GAME DESIGN
-    private double energy = 50;
-    private double maxEnergy = 100;
-    private double regenRate = 0.8;
+    private final Subject observer;
+    // Energia attuale del player
+    private double energiaAttuale = 50;
+    // Energia massima possibile
+    private double energiaMassima = 100;
+    // Quanto velocemente si rigenera l energia
+    private double velocitaRegen = 0.8;
 
     private ResourceManager() {
-        this.subject = new Subject();
+        this.observer = new Subject();
     }
 
     public static synchronized ResourceManager getInstance() {
@@ -24,46 +25,46 @@ public class ResourceManager {
     }
 
     public void addObserver(Observer observer) {
-        subject.attach(observer);
+        this.observer.attach(observer);
     }
 
     public void update(double deltaTime) {
-        if (energy < maxEnergy) {
-            energy += regenRate * deltaTime;
-            if (energy > maxEnergy) {
-                energy = maxEnergy;
+        if (energiaAttuale < energiaMassima) {
+            energiaAttuale += velocitaRegen * deltaTime;
+            if (energiaAttuale > energiaMassima) {
+                energiaAttuale = energiaMassima;
             }
-            subject.notifyObservers("energy_changed", energy);
+            observer.notifyObservers("energy_changed", energiaAttuale);
         }
     }
 
     public boolean canAfford(double cost) {
-        return energy >= cost;
+        return energiaAttuale >= cost;
     }
 
     public boolean spendEnergy(double cost) {
         if (canAfford(cost)) {
-            energy -= cost;
-            subject.notifyObservers("energy_changed", energy);
+            energiaAttuale = energiaAttuale - cost;
+            observer.notifyObservers("energy_changed", energiaAttuale);
             return true;
         }
         return false;
     }
 
     public double getEnergy() {
-        return energy;
+        return energiaAttuale;
     }
 
     public double getMaxEnergy() {
-        return maxEnergy;
+        return energiaMassima;
     }
 
     public void reset() {
-        energy = 50;
-        subject.notifyObservers("energy_changed", energy);
+        energiaAttuale = 50;
+        observer.notifyObservers("energy_changed", energiaAttuale);
     }
 
     public Subject getSubject() {
-        return subject;
+        return observer;
     }
 }

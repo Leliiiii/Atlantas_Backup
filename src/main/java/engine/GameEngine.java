@@ -48,44 +48,46 @@ public class GameEngine {
     public void update(double deltaTime) {
         if (gameOver) return;
 
+        // Aggiorna risorse e spawner
         resourceManager.update(deltaTime);
         spawner.update(deltaTime, enemyUnits, laneY, screenWidth);
 
+        // Muove gli Unit
         updateUnits(deltaTime, playerUnits, enemyUnits, enemyTower);
         updateUnits(deltaTime, enemyUnits, playerUnits, playerTower);
     }
 
     private void updateUnits(double deltaTime, List<Unit> allies, List<Unit> enemies, Tower enemyTower) {
-        Iterator<Unit> iterator = allies.iterator();
-        while (iterator.hasNext()) {
-            Unit unit = iterator.next();
+        // Ciclo classico sulle unità
+        for (int i = 0; i < allies.size(); i++) {
+            Unit unit = allies.get(i);
+
+            // Se l unità è morta la rimuovo dalla lista
             if (!unit.isActive()) {
-                iterator.remove();
+                allies.remove(i);
+                i--; // importante per non saltare il prossimo elemento
                 continue;
             }
 
+            // Aggiorno logica base unità
             unit.update(deltaTime);
-            //TODO OCCHIO I CONTROLLI PER TRUPPE SPECIALI
 
-            // Cerca un target
+            // TODO gestione unità speciali
+
+            // Cerco un bersaglio tra i nemici
             Unit target = unit.findTarget(enemies);
 
             if (target != null && unit.isInRange(target)) {
+                // Si ferma e attacca
                 unit.setMoving(false);
                 unit.setTarget(target);
 
-                //TODO ATTENTION:IN CASO PER QUELLI CHE SPARANO A DISTANZA DEVO AGGIUNGERE UN CONTROLLO
+                // TODO DEVO FARE L ATTACCO A DISTAZA
             } else {
-                // Se non trova nemici continua a muoversi
+                // Se non ha target continua a muoversi
                 unit.setMoving(true);
                 unit.setTarget(null);
                 unit.move(deltaTime);
-
-                // Check if reached enemy tower
-                if (isUnitAtTower(unit, enemyTower)) {
-                    enemyTower.takeDamage(unit.getDamage() * deltaTime);
-                    unit.setMoving(false);
-                }
             }
         }
     }

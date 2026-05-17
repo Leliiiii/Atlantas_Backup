@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+// Voglio solo gli oggetti di Poolable
 public class ObjectPool<T extends Poolable> {
     private final List<T> available;
     private final List<T> inUse;
@@ -21,20 +22,6 @@ public class ObjectPool<T extends Poolable> {
         }
     }
 
-    public T obtain() {
-        T obj;
-        if (!available.isEmpty()) {
-            obj = available.remove(available.size() - 1);
-        } else if (inUse.size() < maxSize) {
-            obj = factory.get();
-        } else {
-            return null;
-        }
-        obj.reset();
-        inUse.add(obj);
-        return obj;
-    }
-
     public void free(T obj) {
         if (inUse.remove(obj)) {
             obj.reset();
@@ -42,7 +29,7 @@ public class ObjectPool<T extends Poolable> {
         }
     }
 
-    //TODO FREE ALL IN CASO
+    //TODO "FREE ALL" IN CASO
 
     public List<T> getInUse() {
         return new ArrayList<>(inUse);
