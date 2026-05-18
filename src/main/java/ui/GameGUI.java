@@ -8,8 +8,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import observer.Observer;
-import projectiles.Projectile;
 import resources.ResourceManager;
 import units.Unit;
 
@@ -177,13 +175,13 @@ public class GameGUI {
                 continue;
             }
 
-            double unitX = currentUnit.getX();
-            double unitY = currentUnit.getY();
-            double unitWidth = currentUnit.getWidth();
-            double unitHeight = currentUnit.getHeight();
+            double unitX = currentUnit.getPosX();
+            double unitY = currentUnit.getPosY();
+            double unitWidth = currentUnit.getLarghezza();
+            double unitHeight = currentUnit.getAltezza();
 
             // Corpo unita
-            gc.setFill(currentUnit.getColor());
+            gc.setFill(currentUnit.getColore());
             gc.fillOval(unitX, unitY, unitWidth, unitHeight);
 
             // Bordo unita

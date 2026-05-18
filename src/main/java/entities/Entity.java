@@ -14,12 +14,13 @@ public abstract class Entity {
     // colore grafico
     protected Color colore;
 
-    public Entity(double x, double y, double width, double height, Color color) {
-        this.posX = x;
-        this.posY = y;
-        this.larghezza = width;
-        this.altezza = height;
-        this.colore = color;
+    public Entity(double posX, double posY, double larghezza, double altezza, Color colore) {
+        this.posX = posX;
+        this.posY = posY;
+        this.larghezza = larghezza;
+        this.altezza = altezza;
+        this.attiva = attiva;
+        this.colore = colore;
     }
 
     // aggiorna logica entity
@@ -33,23 +34,23 @@ public abstract class Entity {
         this.attiva = active;
     }
 
-    public double getX() {
+    public double getPosX() {
         return posX;
     }
 
-    public double getY() {
+    public double getPosY() {
         return posY;
     }
 
-    public double getWidth() {
+    public double getLarghezza() {
         return larghezza;
     }
 
-    public double getHeight() {
+    public double getAltezza() {
         return altezza;
     }
 
-    public Color getColor() {
+    public Color getColore() {
         return colore;
     }
 
@@ -73,9 +74,9 @@ public abstract class Entity {
 
     // TODO gestione collisioni
 
-    public double distanceTo(Entity other) {
-        double deltaX = getCenterX() - other.getCenterX();
-        double deltaY = getCenterY() - other.getCenterY();
+    public double distanceTo(Entity e) {
+        double deltaX = getCenterX() - e.getCenterX();
+        double deltaY = getCenterY() - e.getCenterY();
         return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
     }
 }

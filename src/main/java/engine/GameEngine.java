@@ -8,10 +8,10 @@ import observer.Observer;
 import observer.Subject;
 import projectiles.Projectile;
 import resources.ResourceManager;
+import units.SeahorseUnit;
 import units.Unit;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class GameEngine {
@@ -55,6 +55,8 @@ public class GameEngine {
         // Muove gli Unit
         updateUnits(deltaTime, playerUnits, enemyUnits, enemyTower);
         updateUnits(deltaTime, enemyUnits, playerUnits, playerTower);
+
+        updateProjectiles(deltaTime);
     }
 
     private void updateUnits(double deltaTime, List<Unit> allies, List<Unit> enemies, Tower enemyTower) {
@@ -73,6 +75,12 @@ public class GameEngine {
             unit.update(deltaTime);
 
             // TODO gestione unità speciali
+            // Se l'unità è un cavalluccio marino,
+            // cura gli alleati presenti nella lista
+            if (unit instanceof SeahorseUnit) {
+                ((SeahorseUnit) unit).healAllies(allies);
+            }
+
 
             // Cerco un bersaglio tra i nemici
             Unit target = unit.findTarget(enemies);
@@ -83,6 +91,14 @@ public class GameEngine {
                 unit.setTarget(target);
 
                 // TODO DEVO FARE L ATTACCO A DISTAZA
+                if (unit.getRange() > 100) {
+                    if (unit.getAttackTimer() <= 0) {
+                        spawnProjectile(unit, target);
+                    }
+                } else {
+                    unit.attack(target);
+                }
+
             } else {
                 // Se non ha target continua a muoversi
                 unit.setMoving(true);
@@ -92,9 +108,33 @@ public class GameEngine {
         }
     }
 
+    private void spawnProjectile(Unit shooter, Unit target) {
+        Projectile p = EntityFactory.getInstance().createProjectile(
+                shooter.getCenterX(), shooter.getCenterY(),
+                shooter.getDamage(), 5.0, target, shooter.getTeam()
+        );
+        projectiles.add(p);
+    }
+
+    private void updateProjectiles(double deltaTime) {
+
+        for (int i = 0; i < projectiles.size(); i++) {
+
+            Projectile projectile = projectiles.get(i);
+            projectile.update(deltaTime);
+
+            if (!projectile.isActive()) {
+                EntityFactory.getInstance().returnProjectile(projectile);
+
+                projectiles.remove(i);
+                i--;
+            }
+        }
+    }
+
     private boolean isUnitAtTower(Unit unit, Tower tower) {
-        double unitRight = unit.getX() + unit.getWidth();
-        double unitLeft = unit.getX();
+        double unitRight = unit.getPosX() + unit.getLarghezza();
+        double unitLeft = unit.getPosX();
         double towerRight = tower.getX() + tower.getWidth();
         double towerLeft = tower.getX();
 

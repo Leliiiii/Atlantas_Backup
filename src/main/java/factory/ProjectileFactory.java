@@ -9,7 +9,6 @@ public class ProjectileFactory {
     private ObjectPool<Projectile> projectilePool;
 
     private ProjectileFactory() {
-        // Lambda che fa lo stesso di questo
         // Quando il pool è vuoto e serve un nuovo oggetto:
         projectilePool = new ObjectPool<>(() -> new Projectile(0, 0, 0, 0, null, ""), 20, 100);
     }
@@ -20,6 +19,19 @@ public class ProjectileFactory {
         }
         return instance;
     }
+
+    public Projectile createProjectile(double x, double y, double damage, double speed, Unit target, String team) {
+        Projectile p = projectilePool.obtain();
+        if (p == null) {
+            p = new Projectile(x, y, damage, speed, target, team);
+        } else {
+            p.setX(x);
+            p.setY(y);
+            p.setTarget(target);
+        }
+        return p;
+    }
+
 
 
 

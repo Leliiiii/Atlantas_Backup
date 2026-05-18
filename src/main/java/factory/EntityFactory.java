@@ -25,6 +25,10 @@ public class EntityFactory {
     }
 
     //TODO LA CREAZIONE DI PROIETTILI
+    public Projectile createProjectile(double x, double y, double damage, double speed, Unit target, String team) {
+        return projectileFactory.createProjectile(x, y, damage, speed, target, team);
+    }
+
 
     public void returnProjectile(Projectile p) {
         projectileFactory.returnProjectile(p);

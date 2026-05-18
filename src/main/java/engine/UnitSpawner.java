@@ -52,7 +52,7 @@ public class UnitSpawner {
 
     public void reset() {
         enemySpawnTimer = 0;
-        enemySpawnInterval = 4.0;
+        enemySpawnInterval = 8.0;
         enemySpawnCount = 0;
     }
 }

@@ -22,6 +22,20 @@ public class ObjectPool<T extends Poolable> {
         }
     }
 
+    public T obtain() {
+        T obj;
+        if (!available.isEmpty()) {
+            obj = available.remove(available.size() - 1);
+        } else if (inUse.size() < maxSize) {
+            obj = factory.get();
+        } else {
+            return null;
+        }
+        obj.reset();
+        inUse.add(obj);
+        return obj;
+    }
+
     public void free(T obj) {
         if (inUse.remove(obj)) {
             obj.reset();
