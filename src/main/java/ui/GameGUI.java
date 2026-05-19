@@ -88,9 +88,14 @@ public class GameGUI {
         drawLane();
         drawTowers();
         drawUnits();
+        drawProjectiles();
         drawUI();
 
         //TODO COSA SUCCEDE SE SI PERDE (IF)
+        if (showGameOver) {
+            drawGameOver();
+        }
+
     }
 
     //TODO NON FUNZIONA BENE
@@ -207,6 +212,22 @@ public class GameGUI {
         }
     }
 
+    
+    private void drawProjectiles() {
+        // Colore proiettili
+        gc.setFill(Color.ORANGE);
+
+        for (int i = 0; i < engine.getProjectiles().size(); i++) {
+            Projectile proj = engine.getProjectiles().get(i);
+            // Skip se non attivo
+            if (!proj.isActive()) {
+                continue;
+            }
+
+            gc.fillOval(proj.getX(), proj.getY(), proj.getWidth(), proj.getHeight());
+        }
+    }
+
     private void drawHPBar(double x, double y, double width, double height, double hp, double maxHp, Color color) {
         double hpPercent = hp / maxHp;
 
@@ -250,6 +271,55 @@ public class GameGUI {
     }
 
     //TODO METODO SCONFITTA
+    
+private void drawGameOver() {
+        // overlay scuro
+        gc.setFill(Color.rgb(0, 0, 0, 0.7));
+        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+
+        // Game Over 
+        gc.setFont(Font.font("Arial", FontWeight.BOLD, 48));
+        if (playerWon) {
+            gc.setFill(Color.GOLD);
+            gc.fillText("VITTORIA!", canvas.getWidth()/2 - 120, canvas.getHeight()/2 - 20);
+            gc.setFont(Font.font("Arial", 18));
+            gc.setFill(Color.WHITE);
+            gc.fillText("Atlantide è salva!", canvas.getWidth()/2 - 80, canvas.getHeight()/2 + 20);
+        } else {
+            gc.setFill(Color.DARKRED);
+            gc.fillText("SCONFITTA!", canvas.getWidth()/2 - 130, canvas.getHeight()/2 - 20);
+            gc.setFont(Font.font("Arial", 18));
+            gc.setFill(Color.WHITE);
+            gc.fillText("Il Doge Necrotico ha vinto...", canvas.getWidth()/2 - 110, canvas.getHeight()/2 + 20);
+        }
+
+        gc.setFont(Font.font("Arial", 14));
+        gc.setFill(Color.LIGHTGRAY);
+        gc.fillText("Premi R per riprovare", canvas.getWidth()/2 - 80, canvas.getHeight()/2 + 60);
+    }
+
+    public boolean isShowGameOver() {
+        return showGameOver;
+    }
+
+    public void reset() {
+        showGameOver = false;
+        playerWon = false;
+    }
 
 
+    private void checkGameOver() {
+        if (enemyTower.isDestroyed()) {
+            gameOver = true;
+            playerWon = true;
+            gameStateSubject.notifyObservers("game_over", true);
+        } else if (playerTower.isDestroyed()) {
+            gameOver = true;
+            playerWon = false;
+            gameStateSubject.notifyObservers("game_over", false);
+        }
+    }
+
+
+    
 }
