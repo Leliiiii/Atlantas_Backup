@@ -22,6 +22,16 @@ public class Tower {
         this.subject = new Subject();
     }
 
+    public void takeDamage(double damage) {
+        hp -= damage;
+        if (hp <= 0) {
+            hp = 0;
+            destroyed = true;
+        }
+        subject.notifyObservers("tower_hp_changed", this);
+    }
+
+
     public boolean isDestroyed() {
         return destroyed;
     }
