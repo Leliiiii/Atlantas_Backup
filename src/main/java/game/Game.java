@@ -137,6 +137,7 @@ public class Game extends Application {
     private void restartGame() {
         gui.stop();
         engine.reset();
+        gui.reset();
         gui.start();
     }
 
