@@ -34,7 +34,10 @@ public class UnitSpawner {
             spawnEnemy(enemyUnits, laneY, screenWidth);
             enemySpawnCount++;
 
-            //TODO AUMENTARE LA DIFFICOLTA' SERVE UN CONTROLLO /LO FACCIO IO ZAINAB, LASCIAMI LA LOGICA
+            //TODO AUMENTARE LA DIFFICOLTA' SERVE UN CONTROLLO 
+            if (enemySpawnCount % 10 == 0 && enemySpawnInterval > 1.5) {
+                enemySpawnInterval -= 0.2;
+            }
         }
     }
 
