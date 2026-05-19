@@ -57,6 +57,7 @@ public class GameEngine {
         updateUnits(deltaTime, enemyUnits, playerUnits, playerTower);
 
         updateProjectiles(deltaTime);
+        checkGameOver();
     }
 
     private void updateUnits(double deltaTime, List<Unit> allies, List<Unit> enemies, Tower enemyTower) {
@@ -106,6 +107,14 @@ public class GameEngine {
                 unit.move(deltaTime);
             }
         }
+
+       
+
+        if (isUnitAtTower(unit, enemyTower)) {
+            enemyTower.takeDamage(unit.getDamage() * deltaTime);
+            unit.setMoving(false);
+        }
+ 
     }
 
     private void spawnProjectile(Unit shooter, Unit target) {
@@ -145,6 +154,20 @@ public class GameEngine {
         }
     }
 
+    
+    private void checkGameOver() {
+        if (enemyTower.isDestroyed()) {
+            gameOver = true;
+            playerWon = true;
+            gameStateSubject.notifyObservers("game_over", true);
+        } else if (playerTower.isDestroyed()) {
+            gameOver = true;
+            playerWon = false;
+            gameStateSubject.notifyObservers("game_over", false);
+        }
+    }
+
+    
     public void spawnPlayerUnit(String type) {
         if (gameOver) return;
 
