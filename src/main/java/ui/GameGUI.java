@@ -308,17 +308,6 @@ private void drawGameOver() {
     }
 
 
-    private void checkGameOver() {
-        if (enemyTower.isDestroyed()) {
-            gameOver = true;
-            playerWon = true;
-            gameStateSubject.notifyObservers("game_over", true);
-        } else if (playerTower.isDestroyed()) {
-            gameOver = true;
-            playerWon = false;
-            gameStateSubject.notifyObservers("game_over", false);
-        }
-    }
 
 
     
