@@ -14,9 +14,11 @@ public class Subject {
         observers.remove(observer);
     }
 
-    public void notifyObservers(String event, Object data) {
-        for (Observer observer : observers) {
-            observer.update(event, data);
+    public void notifyObservers(String eventName, Object eventData) {
+
+        // Avvisa tutti gli observer
+        for (int i = 0; i < observers.size(); i++) {
+            observers.get(i).update(eventName, eventData);
         }
     }
 }

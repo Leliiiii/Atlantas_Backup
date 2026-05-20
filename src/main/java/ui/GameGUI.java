@@ -5,13 +5,17 @@ import engine.GameEngine;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import projectiles.Projectile;
 import resources.ResourceManager;
 import units.Unit;
 
+import java.io.InputStream;
 import java.util.List;
+import java.util.Objects;
 
 public class GameGUI {
     private final Canvas canvas;
@@ -20,6 +24,10 @@ public class GameGUI {
     private final ResourceManager resourceManager;
     private AnimationTimer gameLoop;
     private long lastTime = 0;
+    // Background come attributo injvece di caricarlo ogni volta
+    private Image backgroundImage;
+    private Image playerTowerImage;
+    private Image enemyTowerImage;
 
     private boolean showGameOver = false;
     private boolean playerWon = false;
@@ -29,7 +37,10 @@ public class GameGUI {
         this.gc = canvas.getGraphicsContext2D();
         this.engine = engine;
         this.resourceManager = ResourceManager.getInstance();
-
+        this.backgroundImage = new Image(getClass().getResourceAsStream("/img/background.png"), canvas.getWidth(), canvas.getHeight(), false, true);
+        // Carica immagini torri
+        this.playerTowerImage = new Image(getClass().getResourceAsStream("/img/playerTower.png"));
+        this.enemyTowerImage = new Image(getClass().getResourceAsStream("/img/enemyTower.png"));
         setupObservers();
     }
 
@@ -100,17 +111,7 @@ public class GameGUI {
 
     //TODO NON FUNZIONA BENE
     private void drawBackground() {
-        // Color oceano svizzero
-        gc.setFill(Color.rgb(5, 20, 40));
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-
-        // Particelle
-        gc.setFill(Color.rgb(20, 60, 100, 0.3));
-        for (int i = 0; i < 20; i++) {
-            double px = Math.random() * canvas.getWidth();
-            double py = Math.random() * canvas.getHeight();
-            gc.fillOval(px, py, 3, 3);
-        }
+        gc.drawImage(backgroundImage, 0, 0, canvas.getWidth(), canvas.getHeight());
     }
 
     private void drawLane() {
@@ -144,25 +145,25 @@ public class GameGUI {
         double w = tower.getWidth();
         double h = tower.getHeight();
 
-        // Coloro i Tower ma dopo lo dovremmo togliere
-        Color towerColor;
+        // Disegna immagine torre invece di forme
         if (tower.getTeam().equals("player")) {
-            towerColor = Color.DEEPSKYBLUE;
+            // Disegna immagine più grande della hitbox
+            gc.drawImage(playerTowerImage, x - 20, y - 200, w + 120, h + 180);
         } else {
-            towerColor = Color.DARKSEAGREEN;
+            // Disegna immagine più grande della hitbox
+            gc.drawImage(enemyTowerImage, x - 100, y - 200, w + 120, h + 180);
         }
 
-        gc.setFill(towerColor);
-        gc.fillRect(x, y, w, h);
+        // Barra HP sopra la torre
+        Color hpColor;
 
-        // Barra dell hp
         if (tower.getTeam().equals("player")) {
-            towerColor = Color.GREEN;
+            hpColor = Color.GREEN;
         } else {
-            towerColor = Color.RED;
+            hpColor = Color.RED;
+            x += -80;
         }
-
-        drawHPBar(x, y - 25, w, 12, tower.getHp(), tower.getMaxHp(), towerColor);
+        drawHPBar(x, y - 220, 2 * w, 12, tower.getHp(), tower.getMaxHp(), hpColor);
     }
 
     private void drawUnits() {
@@ -224,7 +225,7 @@ public class GameGUI {
                 continue;
             }
 
-            gc.fillOval(proj.getX(), proj.getY(), proj.getWidth(), proj.getHeight());
+            gc.fillOval(proj.getPosX(), proj.getPosY(), proj.getLarghezza(), proj.getAltezza());
         }
     }
 
@@ -306,6 +307,7 @@ private void drawGameOver() {
         showGameOver = false;
         playerWon = false;
     }
+
 
 
 

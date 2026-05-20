@@ -31,7 +31,7 @@ public class GameEngine {
 
     public GameEngine(double screenWidth, double screenHeight) {
         this.screenWidth = screenWidth;
-        this.laneY = screenHeight / 2;
+        this.laneY = screenHeight / 1.2;
 
         this.playerUnits = new ArrayList<>();
         this.enemyUnits = new ArrayList<>();
@@ -52,7 +52,7 @@ public class GameEngine {
         resourceManager.update(deltaTime);
         spawner.update(deltaTime, enemyUnits, laneY, screenWidth);
 
-        // Muove gli Unit
+        // Muove le Unit
         updateUnits(deltaTime, playerUnits, enemyUnits, enemyTower);
         updateUnits(deltaTime, enemyUnits, playerUnits, playerTower);
 
@@ -75,7 +75,6 @@ public class GameEngine {
             // Aggiorno logica base unità
             unit.update(deltaTime);
 
-            // TODO gestione unità speciali
             // Se l'unità è un cavalluccio marino,
             // cura gli alleati presenti nella lista
             if (unit instanceof SeahorseUnit) {
@@ -106,14 +105,14 @@ public class GameEngine {
                 unit.setTarget(null);
                 unit.move(deltaTime);
             }
+
+            if (isUnitAtTower(unit, enemyTower)) {
+                enemyTower.takeDamage(unit.getDamage() * deltaTime);
+                unit.setMoving(false);
+            }
         }
 
-       
 
-        if (isUnitAtTower(unit, enemyTower)) {
-            enemyTower.takeDamage(unit.getDamage() * deltaTime);
-            unit.setMoving(false);
-        }
  
     }
 
@@ -126,15 +125,11 @@ public class GameEngine {
     }
 
     private void updateProjectiles(double deltaTime) {
-
         for (int i = 0; i < projectiles.size(); i++) {
-
             Projectile projectile = projectiles.get(i);
             projectile.update(deltaTime);
-
             if (!projectile.isActive()) {
                 EntityFactory.getInstance().returnProjectile(projectile);
-
                 projectiles.remove(i);
                 i--;
             }
@@ -153,7 +148,6 @@ public class GameEngine {
             return unitLeft <= towerRight;
         }
     }
-
     
     private void checkGameOver() {
         if (enemyTower.isDestroyed()) {

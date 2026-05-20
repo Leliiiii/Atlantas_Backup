@@ -19,7 +19,6 @@ public abstract class Entity {
         this.posY = posY;
         this.larghezza = larghezza;
         this.altezza = altezza;
-        this.attiva = attiva;
         this.colore = colore;
     }
 

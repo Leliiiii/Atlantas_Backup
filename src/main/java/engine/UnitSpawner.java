@@ -9,7 +9,7 @@ public class UnitSpawner {
     private final EntityFactory factory;
     private final Random random;
     private double enemySpawnTimer = 0;
-    private double enemySpawnInterval = 4.0;
+    private double enemySpawnInterval = 8.0;
     private int enemySpawnCount = 0;
 
     private final String[] enemyTypes = {
@@ -55,7 +55,7 @@ public class UnitSpawner {
 
     public void reset() {
         enemySpawnTimer = 0;
-        enemySpawnInterval = 8.0;
+        enemySpawnInterval = 8.0 - (Math.random() * 6);
         enemySpawnCount = 0;
     }
 }

@@ -27,33 +27,18 @@ public class Game extends Application {
     public void start(Stage primaryStage) {
         primaryStage.setTitle("L'Eclissi della Laguna");
 
-        // Main layout
         BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: #051428;");
-
-        // Title
-        Text title = new Text("L'Eclissi della Laguna");
-        title.setFont(Font.font("Arial", FontWeight.BOLD, 28));
-        title.setFill(Color.DEEPSKYBLUE);
-
-        Text subtitle = new Text("2147 - Venezia è sprofondata. Atlantide deve sopravvivere.");
-        subtitle.setFont(Font.font("Arial", 14));
-        subtitle.setFill(Color.LIGHTBLUE);
-
-        VBox titleBox = new VBox(5, title, subtitle);
-        titleBox.setAlignment(Pos.CENTER);
-        titleBox.setPadding(new Insets(10));
-        root.setTop(titleBox);
 
         // Game Canvas
         canvas = new Canvas(SCREEN_WIDTH, SCREEN_HEIGHT - 200);
         root.setCenter(canvas);
 
-        // Initialize game
+        // Inizia il gioco
         engine = new GameEngine(SCREEN_WIDTH, SCREEN_HEIGHT - 200);
         gui = new GameGUI(canvas, engine);
 
-        // Unit buttons
+        // Bottoni delle Unit
         HBox buttonBox = createUnitButtons();
         buttonBox.setAlignment(Pos.CENTER);
         buttonBox.setPadding(new Insets(10));
@@ -63,7 +48,7 @@ public class Game extends Application {
         // Scene
         Scene scene = new Scene(root, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-        // Keyboard input for restart
+        // Numeri della tastiera
         scene.setOnKeyPressed(e -> {
             switch (e.getCode()) {
                 case R:

@@ -1,5 +1,6 @@
 package buildings;
 
+import javafx.scene.image.Image;
 import observer.Subject;
 
 public class Tower {

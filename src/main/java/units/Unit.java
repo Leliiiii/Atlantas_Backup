@@ -19,7 +19,7 @@ public abstract class Unit extends Entity {
     protected double spawnCost;
 
     public Unit(double x, double y, double width, double height, Color color, double hp, double damage, double speed, double range, double attackCooldown, String team, double cost) {
-        super(x, y, width, height, color);
+        super(x, y - 50, width, height, color);
 
         this.health = hp;
         this.maxHealth = hp;

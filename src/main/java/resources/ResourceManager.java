@@ -11,7 +11,7 @@ public class ResourceManager {
     // Energia massima possibile
     private double energiaMassima = 100;
     // Quanto velocemente si rigenera l energia
-    private double velocitaRegen = 0.8;
+    private double velocitaRegen = 1.3;
 
     private ResourceManager() {
         this.observer = new Subject();
