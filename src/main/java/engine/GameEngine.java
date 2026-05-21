@@ -99,7 +99,7 @@ public class GameEngine {
                     unit.attack(target);
                 }
 
-            } else {
+            } else if(!isUnitAtTower(unit, enemyTower)){
                 // Se non ha target continua a muoversi
                 unit.setMoving(true);
                 unit.setTarget(null);
@@ -107,8 +107,9 @@ public class GameEngine {
             }
 
             if (isUnitAtTower(unit, enemyTower)) {
-                enemyTower.takeDamage(unit.getDamage() * deltaTime);
                 unit.setMoving(false);
+                enemyTower.takeDamage(unit.getDamage() * deltaTime);
+
             }
         }
 
@@ -117,10 +118,7 @@ public class GameEngine {
     }
 
     private void spawnProjectile(Unit shooter, Unit target) {
-        Projectile p = EntityFactory.getInstance().createProjectile(
-                shooter.getCenterX(), shooter.getCenterY(),
-                shooter.getDamage(), 5.0, target, shooter.getTeam()
-        );
+        Projectile p = EntityFactory.getInstance().createProjectile(shooter.getCenterX(), shooter.getCenterY(), shooter.getDamage(), 5.0, target, shooter.getTeam());
         projectiles.add(p);
     }
 
@@ -139,12 +137,15 @@ public class GameEngine {
     private boolean isUnitAtTower(Unit unit, Tower tower) {
         double unitRight = unit.getPosX() + unit.getLarghezza();
         double unitLeft = unit.getPosX();
-        double towerRight = tower.getX() + tower.getWidth();
-        double towerLeft = tower.getX();
+
+        double towerLeft = 1000;                    // bordo sinistro torre
+        double towerRight = 200;                    // bordo destro torre
 
         if (unit.getTeam().equals("player")) {
+            // Player va verso destra, deve toccare il bordo SINISTRO della torre nemica
             return unitRight >= towerLeft;
         } else {
+            // Nemico va verso sinistra, deve toccare il bordo DESTRO della torre player
             return unitLeft <= towerRight;
         }
     }

@@ -147,11 +147,9 @@ public class GameGUI {
 
         // Disegna immagine torre invece di forme
         if (tower.getTeam().equals("player")) {
-            // Disegna immagine più grande della hitbox
-            gc.drawImage(playerTowerImage, x - 20, y - 200, w + 120, h + 180);
+            gc.drawImage(playerTowerImage, x - 20, y - 200, w, h);
         } else {
-            // Disegna immagine più grande della hitbox
-            gc.drawImage(enemyTowerImage, x - 100, y - 200, w + 120, h + 180);
+            gc.drawImage(enemyTowerImage, x - 100, y - 200, w, h);
         }
 
         // Barra HP sopra la torre
@@ -163,7 +161,7 @@ public class GameGUI {
             hpColor = Color.RED;
             x += -80;
         }
-        drawHPBar(x, y - 220, 2 * w, 12, tower.getHp(), tower.getMaxHp(), hpColor);
+        drawHPBar(x, y - 220, w - 20, 12, tower.getHp(), tower.getMaxHp(), hpColor);
     }
 
     private void drawUnits() {
